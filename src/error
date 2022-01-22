@@ -1,0 +1,43 @@
+#pragma once
+#include <Nextion.h>
+#include <SoftwareSerial.h>
+#include <map>
+#include <string>
+#include <iostream>
+
+constexpr uint32_t HMI_RX = D5;
+constexpr uint32_t HMI_TX = D6;
+
+class NextionHandler
+{
+public:
+    bool Create(uint32_t bauds);
+    void AddPage(const std::string& pname, uint32_t id);
+
+    Nextion* GetDisplay() { return m_pDisplay; }
+
+    template<class T>
+    void AddControl(const std::string& pname, uint32_t id, const std::string& ctrl_name)
+    {
+        const auto& page = m_pages.find(pname);
+        if(page == m_pages.end())
+            return;
+
+        m_ctrls.emplace(ctrl_name, std::make_shared<T>(m_pDisplay, page->second.getObjPid(), id, ctrl_name.c_str(), &page->second));
+    }
+
+    template<class T>
+    std::shared_ptr<T> GetControl(const std::string& ctrl_name)
+    {
+        auto control = m_ctrls.find(ctrl_name);
+        if(control != m_ctrls.end())
+        {
+            return std::dynamic_pointer_cast<T>(control->second);
+        }
+        return std::shared_ptr<T>(nullptr);
+    }
+private:
+    std::map<std::string, std::shared_ptr<NexObject>> m_ctrls;
+    std::map<std::string, NexPage> m_pages;
+    Nextion* m_pDisplay{nullptr};
+};
