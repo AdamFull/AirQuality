@@ -1,4 +1,4 @@
-#pragma once
+/*#pragma once
 #include <Arduino.h>
 #include <Nextion.h>
 #include <SoftwareSerial.h>
@@ -39,4 +39,4 @@ private:
     std::map<std::string, void*> m_ctrls;
     Nextion* m_pDisplay{nullptr};
     std::unique_ptr<SoftwareSerial> HMISerial;
-};
+};*/

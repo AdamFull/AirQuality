@@ -1,4 +1,4 @@
-#include "NextionHandler.hpp"
+/*#include "NextionHandler.hpp"
 
 NextionHandler::~NextionHandler()
 {
@@ -16,4 +16,4 @@ bool NextionHandler::Create(uint32_t bauds)
     m_pDisplay = Nextion::GetInstance(*HMISerial.get());
 
     return m_pDisplay && m_pDisplay->nexInit(bauds);
-}
+}*/

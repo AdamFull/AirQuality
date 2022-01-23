@@ -5,9 +5,15 @@
 #include "Sensor/SensorSGP40.h"
 #include "Sensor/SensorSHT31.h"
 
+#if defined(BLACKPILL)
+#define OutputStream SerialUSB
+#else
+#define OutputStream Serial
+#endif
+
 void Application::Create()
 {
-    display = std::make_shared<NextionHandler>();
+    /*display = std::make_shared<NextionHandler>();
 
     if (!display->Create(4800))
     {
@@ -24,26 +30,11 @@ void Application::Create()
     display->AddControl<NexProgressBar>(0, 17, "progressTVOC");
     display->AddControl<NexProgressBar>(0, 19, "progressCO2");
     display->AddControl<NexProgressBar>(0, 18, "progressTemp");
-    display->AddControl<NexProgressBar>(0, 20, "progressHum");
+    display->AddControl<NexProgressBar>(0, 20, "progressHum");*/
 
     sensor_pm25.bind(std::move([&](const uint16_t &val)
     {
-        Serial.println(val);
-		display->GetControl<NexText>("labelPM25data")->setText(String(val).c_str());
-		pm25_percent = (val / 2300.f) * 100.f;
-    }));
-
-    pm25_percent.bind(std::move([&](const uint8_t &val)
-    {
-        auto* progress = display->GetControl<NexProgressBar>("progressPM25");
-        progress->setValue(val);
-
-        if(val > 40)
-            progress->Set_font_color_pco(62884);
-        else if(val > 70)
-            progress->Set_font_color_pco(63650);
-        else
-            progress->Set_font_color_pco(1024); 
+        OutputStream.println(val);
     }));
 
     SensorHandler::GetInstance()->AddSensor<SensorPMS5003>("pms5003");
@@ -64,5 +55,5 @@ void Application::Update()
 
 void Application::ErrorHandler(const std::string& error)
 {
-    Serial.println(error.c_str());
+    OutputStream.println(error.c_str());
 }

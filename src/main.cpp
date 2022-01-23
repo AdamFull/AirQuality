@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include "Application.h"
+#include <memory>
 
 std::unique_ptr<Application> pApp;
 
