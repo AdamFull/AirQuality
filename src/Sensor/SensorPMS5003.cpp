@@ -7,8 +7,8 @@ constexpr auto PMS_TX = PA12;
 void SensorPMS5003::Create()
 {
     //m_pSensor = std::make_unique<SerialPM>(PMS5003, PMS_RX, PMS_TX);
-    pinMode(PB8, OUTPUT);
-    digitalWrite(PB8, HIGH);
+    pinMode(PA8, OUTPUT);
+    digitalWrite(PA8, HIGH);
     m_pSensor = std::make_unique<SerialPM>(PMS5003, Serial1);
     m_pSensor->init();
 

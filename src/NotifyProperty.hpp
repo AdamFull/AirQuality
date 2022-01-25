@@ -2,6 +2,7 @@
 
 #include <optional>
 #include <functional>
+#include <stdint.h>
 
 template <class T>
 struct NotifyProperty

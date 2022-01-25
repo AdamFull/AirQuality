@@ -1,6 +1,7 @@
 #pragma once
-//#include "NextionHandler.hpp"
 #include "NotifyProperty.hpp"
+#include "DisplayHandler.hpp"
+#include <memory>
 
 class Application
 {
@@ -12,7 +13,7 @@ public:
     void ErrorHandler(const std::string& error);
 
 private:
-	//std::shared_ptr<NextionHandler> display;
+	std::unique_ptr<DisplayHandler> display;
 	notify_uint16_t sensor_pm25;
     notify_uint8_t pm25_percent;
 };
