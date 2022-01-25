@@ -1,13 +1,12 @@
 #pragma once
-#include <lvgl.h>
-#include <memory>
+#include "StyleHandle.h"
 
 class CBaseControl
 {
 public:
     virtual void create(lv_obj_t* pParent) { }
     void setParent(lv_obj_t* pParent);
-    void addStyle(lv_style_t* style, lv_style_selector_t selector);
+    void addStyle(CStyleHandle* style, lv_style_selector_t selector);
     void setStyleTextFont(const lv_font_t *font, lv_style_selector_t selector);
 
     void setPosition(lv_coord_t x, lv_coord_t y);

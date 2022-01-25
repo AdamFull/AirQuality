@@ -5,11 +5,11 @@ void CBaseControl::setParent(lv_obj_t* pParent)
     lv_obj_set_parent(m_pInstance.get(), pParent);
 }
 
-void CBaseControl::addStyle(lv_style_t* style, lv_style_selector_t selector) 
+void CBaseControl::addStyle(CStyleHandle* style, lv_style_selector_t selector) 
 { 
     if(m_pInstance)
     {
-        lv_obj_add_style(m_pInstance.get(), style, selector);
+        lv_obj_add_style(m_pInstance.get(), style->get(), selector);
     }
 }
 

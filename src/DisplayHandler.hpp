@@ -73,10 +73,14 @@ public:
         return static_cast<T*>(m_ctrls[ctrl_name]);
     }
 
+    CStyleHandle* AddStyle(const std::string& style_name);
+    CStyleHandle* GetStyle(const std::string& style_name);
+
     static void Flush(lv_disp_drv_t *disp, const lv_area_t *area, lv_color_t *color_p);
 private:
     static std::unique_ptr<TFT_eSPI> display;
     std::map<std::string, CBaseControl*> m_ctrls;
+    std::map<std::string, CStyleHandle*> m_styles;
 
     unsigned long current_time{0}, old_time{0};
     lv_disp_draw_buf_t draw_buf;

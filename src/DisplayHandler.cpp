@@ -64,6 +64,19 @@ void DisplayHandler::Update()
     lv_timer_handler();
 }
 
+CStyleHandle* DisplayHandler::AddStyle(const std::string& style_name)
+{
+    auto ptr = new CStyleHandle();
+    ptr->create();
+    m_styles.emplace(style_name, ptr);
+    return ptr;
+}
+
+CStyleHandle* DisplayHandler::GetStyle(const std::string& style_name)
+{
+    return m_styles[style_name];
+}
+
 void DisplayHandler::Flush( lv_disp_drv_t *disp, const lv_area_t *area, lv_color_t *color_p )
 {
     uint32_t w = ( area->x2 - area->x1 + 1 );
