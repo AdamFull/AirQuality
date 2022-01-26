@@ -20,7 +20,6 @@ bool NextionHandler::Create(uint32_t bauds)
 
 #include "DisplayHandler.hpp"
 #include <Arduino.h>
-#include <../examples/lv_examples.h>
 
 //constexpr auto TFT_CS = PB9, TFT_DC = PB7, TFT_RST = PB6, TFT_MOSI = PB5, TFT_MISO = PB4, TFT_CLK = PB4;
 

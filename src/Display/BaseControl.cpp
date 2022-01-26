@@ -1,5 +1,13 @@
 #include "BaseControl.h"
 
+void CBaseControl::create(lv_obj_t* pParent)
+{
+    if(!m_pInstance)
+    {
+        m_pInstance.reset(pParent);
+    }
+}
+
 void CBaseControl::setParent(lv_obj_t* pParent)
 {
     lv_obj_set_parent(m_pInstance.get(), pParent);
@@ -52,4 +60,9 @@ void CBaseControl::setAlignTo(const lv_obj_t* obj, lv_align_t align, lv_coord_t 
 lv_obj_t* CBaseControl::getObj()
 {
     return m_pInstance.get();
+}
+
+void CBaseControl::clearFlag(lv_obj_flag_t f)
+{
+    lv_obj_clear_flag(m_pInstance.get(), f);
 }

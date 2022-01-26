@@ -11,3 +11,4 @@
 #include "Switch.h"
 #include "Spinner.h"
 #include "Line.h"
+#include "Arc.h"
