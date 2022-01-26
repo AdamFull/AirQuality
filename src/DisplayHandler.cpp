@@ -1,27 +1,5 @@
-/*#include "NextionHandler.hpp"
-
-NextionHandler::~NextionHandler()
-{
-    for(auto& [key, val] : m_ctrls)
-    {
-        delete val;
-    }
-    m_ctrls.clear();
-}
-
-bool NextionHandler::Create(uint32_t bauds)
-{
-    HMISerial = std::make_unique<SoftwareSerial>(HMI_RX, HMI_TX);
-    HMISerial->begin(bauds);
-    m_pDisplay = Nextion::GetInstance(*HMISerial.get());
-
-    return m_pDisplay && m_pDisplay->nexInit(bauds);
-}*/
-
 #include "DisplayHandler.hpp"
 #include <Arduino.h>
-
-//constexpr auto TFT_CS = PB9, TFT_DC = PB7, TFT_RST = PB6, TFT_MOSI = PB5, TFT_MISO = PB4, TFT_CLK = PB4;
 
 std::unique_ptr<TFT_eSPI> DisplayHandler::display;
 

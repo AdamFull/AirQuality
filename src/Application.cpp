@@ -9,8 +9,6 @@ void Application::Create()
 {
     display = std::make_unique<DisplayHandler>();
 
-    auto mainScreen = display->AddControl<CBaseControl>("main");
-
     auto delimeter = display->AddControl<CLine>("delimeter");
 
     auto labelPM25 = display->AddControl<CLabel>("labelPM25");
@@ -39,6 +37,7 @@ void Application::Create()
     auto bar_style = display->AddStyle("bar");
     
     display->Create();
+
 
     small_text_style->setTextColor(lv_color_make(128, 128, 128));
     small_text_style->setLineColor(lv_color_make(128, 128, 128));
@@ -73,6 +72,7 @@ void Application::Create()
     progressPM25->setBgAngles(0, 360);
     progressPM25->addStyle(arc_style, 0);
     progressPM25->clearFlag(LV_OBJ_FLAG_CLICKABLE);
+    progressPM25->removeStyle(nullptr, LV_PART_KNOB);
     progressPM25->setAlign(LV_ALIGN_CENTER, 0, -60);
 
 
@@ -101,6 +101,7 @@ void Application::Create()
 
     progressCO2->setAlign(LV_ALIGN_RIGHT_MID, -5, 50);
     progressCO2->addStyle(bar_style, 0);
+    progressCO2->setStyleBaseDir(LV_BASE_DIR_RTL, 0);
     progressCO2->setWidth(150);
 
 
@@ -126,10 +127,12 @@ void Application::Create()
     labelHumdata->setStyleTextFont(&lv_font_montserrat_30, 0);
     labelHumdata->addStyle(big_text_style, 0);
     labelHumdata->setAlign(LV_ALIGN_RIGHT_MID, -5, 90);
-
+    
     progressHum->setAlign(LV_ALIGN_RIGHT_MID, -5, 110);
     progressHum->addStyle(bar_style, 0);
+    progressHum->setStyleBaseDir(LV_BASE_DIR_RTL, 0);
     progressHum->setWidth(150);
+    progressHum->setValue(50, LV_ANIM_OFF);
 
     sensor_pm25.bind(std::move([=](const uint16_t &val)
     {

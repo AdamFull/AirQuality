@@ -42,7 +42,7 @@ public:
     void setColorFilterOpa(lv_opa_t value);
     void setAnimTime(uint32_t value);
     void setAnimSpeed(uint32_t value);
-    void setTranslation(const lv_style_transition_dsc_t *value);
+    void setTransition(const lv_style_transition_dsc_t *value);
     void setBlendMode(lv_blend_mode_t value);
     void setLayout(uint16_t value);
     void setBaseDir(lv_base_dir_t value);

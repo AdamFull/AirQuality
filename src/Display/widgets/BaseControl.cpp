@@ -15,7 +15,7 @@ void CBaseControl::setParent(lv_obj_t* pParent)
 
 void CBaseControl::addStyle(CStyleHandle* style, lv_style_selector_t selector) 
 { 
-    if(m_pInstance)
+    if(style)
     {
         lv_obj_add_style(m_pInstance.get(), style->get(), selector);
     }
@@ -24,7 +24,16 @@ void CBaseControl::addStyle(CStyleHandle* style, lv_style_selector_t selector)
 void CBaseControl::setStyleTextFont(const lv_font_t *font, lv_style_selector_t selector)
 {
     lv_obj_set_style_text_font(m_pInstance.get(), font, selector);
-    
+}
+
+void CBaseControl::setStyleBaseDir(lv_base_dir_t value, lv_style_selector_t selector)
+{
+    lv_obj_set_style_base_dir(m_pInstance.get(), value, selector);
+}
+
+void CBaseControl::setStyleSize(lv_coord_t value, lv_style_selector_t selector)
+{
+    lv_obj_set_style_size(m_pInstance.get(), value, selector);
 }
 
 void CBaseControl::setPosition(lv_coord_t x, lv_coord_t y)
@@ -65,4 +74,9 @@ lv_obj_t* CBaseControl::getObj()
 void CBaseControl::clearFlag(lv_obj_flag_t f)
 {
     lv_obj_clear_flag(m_pInstance.get(), f);
+}
+
+void CBaseControl::removeStyle(CStyleHandle* style, lv_style_selector_t selector)
+{
+    lv_obj_remove_style(m_pInstance.get(), style ? style->get() : nullptr, selector);
 }

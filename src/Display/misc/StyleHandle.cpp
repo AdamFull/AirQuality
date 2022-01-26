@@ -177,7 +177,7 @@ void CStyleHandle::setAnimSpeed(uint32_t value)
     lv_style_set_anim_speed(&m_pStyle, value);
 }
 
-void CStyleHandle::setTranslation(const lv_style_transition_dsc_t *value)
+void CStyleHandle::setTransition(const lv_style_transition_dsc_t *value)
 {
     lv_style_set_transition(&m_pStyle, value);
 }

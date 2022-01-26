@@ -12,3 +12,6 @@
 #include "Spinner.h"
 #include "Line.h"
 #include "Arc.h"
+#include "Calendar.h"
+#include "Chart.h"
+#include "Keyboard.h"

@@ -5,7 +5,7 @@
 #include <numeric>
 #include <stdint.h>
 
-constexpr const uint16_t interpolate_max{20};
+constexpr const uint16_t mean_max{20};
 
 template <class T>
 struct NotifyProperty
@@ -23,20 +23,23 @@ public:
     {
         if (notify && last_changed != val)
         {
-            buffer[interpolate_index++] = val;
-            if(interpolate_index >= interpolate_max)
-                interpolate_index = 0;
+            std::rotate(buffer.begin(), buffer.begin() + 1, buffer.end());
+            buffer.back() = val;
 
-            notify(std::accumulate(buffer, buffer + interpolate_max, 0) / interpolate_max);
+            notify(std::accumulate(buffer.begin(), buffer.end(), 0) / mean_max);
             value = val;
             last_changed = val;
         }
         return last_changed;
     }
 
+    const std::array<T, mean_max>& GetBuffer()
+    {
+        return buffer;
+    }
+
 private:
-    uint16_t interpolate_index{0};
-    T buffer[interpolate_max] = {0};
+    std::array<T, mean_max> buffer{0};
     T last_changed{NULL};
     std::optional<T> value{T()};
     std::function<void(const T&)> notify{nullptr};
