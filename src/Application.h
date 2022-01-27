@@ -11,8 +11,8 @@ public:
 	void Create();
 	void Update();
     void ErrorHandler(const std::string& error);
-
 private:
+	void onCreate(std::shared_ptr<CBaseControl> base);
 	std::unique_ptr<DisplayHandler> display;
 	notify_uint16_t sensor_pm25;
     notify_uint8_t pm25_percent;

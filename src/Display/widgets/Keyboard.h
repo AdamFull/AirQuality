@@ -4,7 +4,7 @@
 class CKeyboard : public CBaseControl
 {
 public:
-    void create(lv_obj_t* pParent) override;
+    void create(std::shared_ptr<CBaseControl> pParent) override;
 
     void setTextarea(lv_obj_t* ta);
     void setMode(lv_keyboard_mode_t mode);

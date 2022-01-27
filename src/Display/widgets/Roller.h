@@ -4,7 +4,7 @@
 class CRoller : public CBaseControl
 {
 public:
-    void create(lv_obj_t* pParent) override;
+    void create(std::shared_ptr<CBaseControl> pParent) override;
 
     void setOptions(const std::string& srOpt, lv_roller_mode_t mode);
     void setSelected(uint16_t sel_opt, lv_anim_enable_t anim);

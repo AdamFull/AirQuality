@@ -2,7 +2,7 @@
 #include <lvgl.h>
 #include <memory>
 
-class CStyleHandle
+class CStyle
 {
 public:
     void create();

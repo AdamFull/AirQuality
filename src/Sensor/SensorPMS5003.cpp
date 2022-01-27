@@ -1,9 +1,6 @@
 #include "SensorPMS5003.h"
 #include <sstream>
 
-constexpr auto PMS_RX = PA11;
-constexpr auto PMS_TX = PA12;
-
 void SensorPMS5003::Create()
 {
     //m_pSensor = std::make_unique<SerialPM>(PMS5003, PMS_RX, PMS_TX);

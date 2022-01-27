@@ -8,36 +8,60 @@
 void Application::Create()
 {
     display = std::make_unique<DisplayHandler>();
-
-    auto delimeter = display->AddControl<CLine>("delimeter");
-
-    auto labelPM25 = display->AddControl<CLabel>("labelPM25");
-    auto labelPM25data = display->AddControl<CLabel>("labelPM25data");
-    auto progressPM25 = display->AddControl<CArc>("progressPM25");
+    display->setOnCreateCallback(this, &Application::onCreate);
     
-    auto labelTVOC = display->AddControl<CLabel>("labelTVOC");
-    auto labelTVOCdata = display->AddControl<CLabel>("labelTVOCdata");
-    auto progressTVOC = display->AddControl<CProgressBar>("progressTVOC");
+    display->Create();
 
-    auto labelCO2 = display->AddControl<CLabel>("labelCO2");
-    auto labelCO2data = display->AddControl<CLabel>("labelCO2data");
-    auto progressCO2 = display->AddControl<CProgressBar>("progressCO2");
+    SensorHandler::GetInstance()->AddSensor<SensorPMS5003>("pms5003");
+    SensorHandler::GetInstance()->GetLast()->AttachErrorCB(std::move([&](const std::string& error) { ErrorHandler(error); }));
+    /*SensorHandler::GetInstance()->AddSensor<SensorMHZ19>("MH-Z19");
+    SensorHandler::GetInstance()->AddSensor<SensorSGP40>("SGP40");
+    SensorHandler::GetInstance()->AddSensor<SensorSHT31>("SHT31");*/
+    
+    SensorHandler::GetInstance()->Create();
+}
 
-    auto labelTemp = display->AddControl<CLabel>("labelTemp");
-    auto labelTempdata = display->AddControl<CLabel>("labelTempdata");
-    auto progressTemp = display->AddControl<CProgressBar>("progressTemp");
+void Application::Update()
+{
+    display->Update();
+    SensorHandler::GetInstance()->Update();
+    sensor_pm25 = SensorHandler::GetInstance()->GetSensor("pms5003")->GetValue<uint16_t>("pm25");
+}
 
-    auto labelHum = display->AddControl<CLabel>("labelHum");
-    auto labelHumdata = display->AddControl<CLabel>("labelHumdata");
-    auto progressHum = display->AddControl<CProgressBar>("progressHum");
+void Application::ErrorHandler(const std::string& error)
+{
+    Serial.println(error.c_str());
+}
+
+void Application::onCreate(std::shared_ptr<CBaseControl> base)
+{
+    auto delimeter = display->AddControl<CLine>("delimeter", base);
+
+    auto labelPM25 = display->AddControl<CLabel>("labelPM25", base);
+    auto labelPM25data = display->AddControl<CLabel>("labelPM25data", base);
+    auto progressPM25 = display->AddControl<CCircularProgressBar>("progressPM25", base);
+    
+    auto labelTVOC = display->AddControl<CLabel>("labelTVOC", base);
+    auto labelTVOCdata = display->AddControl<CLabel>("labelTVOCdata", base);
+    auto progressTVOC = display->AddControl<CProgressBar>("progressTVOC", base);
+
+    auto labelCO2 = display->AddControl<CLabel>("labelCO2", base);
+    auto labelCO2data = display->AddControl<CLabel>("labelCO2data", base);
+    auto progressCO2 = display->AddControl<CProgressBar>("progressCO2", base);
+
+    auto labelTemp = display->AddControl<CLabel>("labelTemp", base);
+    auto labelTempdata = display->AddControl<CLabel>("labelTempdata", base);
+    auto progressTemp = display->AddControl<CProgressBar>("progressTemp", base);
+
+    auto labelHum = display->AddControl<CLabel>("labelHum", base);
+    auto labelHumdata = display->AddControl<CLabel>("labelHumdata", base);
+    auto progressHum = display->AddControl<CProgressBar>("progressHum", base);
+
 
     auto small_text_style = display->AddStyle("small_text");
     auto big_text_style = display->AddStyle("big_text");
     auto arc_style = display->AddStyle("arc");
     auto bar_style = display->AddStyle("bar");
-    
-    display->Create();
-
 
     small_text_style->setTextColor(lv_color_make(128, 128, 128));
     small_text_style->setLineColor(lv_color_make(128, 128, 128));
@@ -68,12 +92,9 @@ void Application::Create()
     labelPM25data->setAlign(LV_ALIGN_TOP_MID, 0, 40);
 
     progressPM25->setSize(125, 125);
-    progressPM25->setRotation(90);
-    progressPM25->setBgAngles(0, 360);
     progressPM25->addStyle(arc_style, 0);
-    progressPM25->clearFlag(LV_OBJ_FLAG_CLICKABLE);
-    progressPM25->removeStyle(nullptr, LV_PART_KNOB);
     progressPM25->setAlign(LV_ALIGN_CENTER, 0, -60);
+    progressPM25->setRange(0, 2300);
 
 
     labelTVOC->setStyleTextFont(&lv_font_montserrat_10, 0);
@@ -88,6 +109,7 @@ void Application::Create()
     progressTVOC->setAlign(LV_ALIGN_LEFT_MID, 5, 50);
     progressTVOC->addStyle(bar_style, 0);
     progressTVOC->setWidth(150);
+    progressTVOC->setRange(0, 2300);
 
 
     labelCO2->setStyleTextFont(&lv_font_montserrat_10, 0);
@@ -103,6 +125,7 @@ void Application::Create()
     progressCO2->addStyle(bar_style, 0);
     progressCO2->setStyleBaseDir(LV_BASE_DIR_RTL, 0);
     progressCO2->setWidth(150);
+    progressCO2->setRange(0, 2300);
 
 
     labelTemp->setStyleTextFont(&lv_font_montserrat_10, 0);
@@ -117,6 +140,7 @@ void Application::Create()
     progressTemp->setAlign(LV_ALIGN_LEFT_MID, 5, 110);
     progressTemp->addStyle(bar_style, 0);
     progressTemp->setWidth(150);
+    progressTemp->setRange(0, 2300);
 
 
     labelHum->setStyleTextFont(&lv_font_montserrat_10, 0);
@@ -132,33 +156,24 @@ void Application::Create()
     progressHum->addStyle(bar_style, 0);
     progressHum->setStyleBaseDir(LV_BASE_DIR_RTL, 0);
     progressHum->setWidth(150);
-    progressHum->setValue(50, LV_ANIM_OFF);
+    progressHum->setRange(0, 2300);
 
-    sensor_pm25.bind(std::move([=](const uint16_t &val)
+
+    sensor_pm25.bind(std::move([=](const uint16_t &old, const uint16_t &val)
     {
-        Serial.println(val);
         auto sr = std::string(String(val).c_str());
+
         labelPM25data->setText(sr);
-        progressPM25->setValue(val/2300.0 * 100);
+        labelTVOCdata->setText(sr);
+        labelCO2data->setText(sr);
+        labelTempdata->setText(sr);
+        labelHumdata->setText(sr);
+        
+        progressPM25->setValueRanged(old, val);
+        /*progressTVOC->setValueRanged(old, val);
+        progressCO2->setValueRanged(old, val);
+        progressTemp->setValueRanged(old, val);
+        progressHum->setValueRanged(old, val);*/
+        Serial.printf("%d:%d\n", old, val);
     }));
-
-    SensorHandler::GetInstance()->AddSensor<SensorPMS5003>("pms5003");
-    SensorHandler::GetInstance()->GetLast()->AttachErrorCB(std::move([&](const std::string& error) { ErrorHandler(error); }));
-    /*SensorHandler::GetInstance()->AddSensor<SensorMHZ19>("MH-Z19");
-    SensorHandler::GetInstance()->AddSensor<SensorSGP40>("SGP40");
-    SensorHandler::GetInstance()->AddSensor<SensorSHT31>("SHT31");*/
-    
-    SensorHandler::GetInstance()->Create();
-}
-
-void Application::Update()
-{
-    display->Update();
-    SensorHandler::GetInstance()->Update();
-    sensor_pm25 = SensorHandler::GetInstance()->GetSensor("pms5003")->GetValue<uint16_t>("pm25");
-}
-
-void Application::ErrorHandler(const std::string& error)
-{
-    Serial.println(error.c_str());
-}
+}   

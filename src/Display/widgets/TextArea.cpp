@@ -1,8 +1,8 @@
 #include "TextArea.h"
 
-void CTextArea::create(lv_obj_t* pParent)
+void CTextArea::create(std::shared_ptr<CBaseControl> pParent)
 {
-    m_pInstance.reset(lv_textarea_create(pParent));
+    m_pInstance.reset(lv_textarea_create(pParent->getObj()));
     CBaseControl::create(pParent);
 }
 

@@ -1,9 +1,15 @@
 #include "Label.h"
 
-void CLabel::create(lv_obj_t* pParent)
+void CLabel::create(std::shared_ptr<CBaseControl> pParent)
 {
-    m_pInstance.reset(lv_label_create(pParent));
+    m_pInstance.reset(lv_label_create(pParent->getObj()));
     CBaseControl::create(pParent);
+}
+
+void CLabel::create(std::shared_ptr<CBaseControl> pParent, std::shared_ptr<CBaseControl> pPtr)
+{
+    m_pInstance.reset(pPtr->getObj());
+    CBaseControl::create(pParent, pPtr);
 }
 
 void CLabel::setText(const std::string& srText)

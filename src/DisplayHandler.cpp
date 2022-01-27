@@ -24,10 +24,12 @@ void DisplayHandler::Create()
     disp_drv.draw_buf = &draw_buf;
     disp_drv.antialiasing = 1;
     lv_disp_drv_register( &disp_drv );
+
+    auto main_page = AddControl<CBaseControl>("lvgl_main_page", lv_scr_act());
     
-    for(auto it = m_ctrls.begin(); it != m_ctrls.end(); ++it)
+    if(m_pOnCreateCallback)
     {
-        it->second->create(lv_scr_act());
+        m_pOnCreateCallback(main_page);
     }
 }
 
@@ -41,15 +43,15 @@ void DisplayHandler::Update()
     lv_timer_handler();
 }
 
-CStyleHandle* DisplayHandler::AddStyle(const std::string& style_name)
+std::shared_ptr<CStyle> DisplayHandler::AddStyle(const std::string& style_name)
 {
-    auto ptr = new CStyleHandle();
+    auto ptr = std::make_shared<CStyle>();
     ptr->create();
     m_styles.emplace(style_name, ptr);
     return ptr;
 }
 
-CStyleHandle* DisplayHandler::GetStyle(const std::string& style_name)
+std::shared_ptr<CStyle> DisplayHandler::GetStyle(const std::string& style_name)
 {
     return m_styles[style_name];
 }

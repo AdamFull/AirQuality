@@ -1,8 +1,8 @@
 #include "CheckBox.h"
 
-void CCheckBox::create(lv_obj_t* pParent)
+void CCheckBox::create(std::shared_ptr<CBaseControl> pParent)
 {
-    m_pInstance.reset(lv_checkbox_create(pParent));
+    m_pInstance.reset(lv_checkbox_create(pParent->getObj()));
     CBaseControl::create(pParent);
 }
 

@@ -1,14 +1,30 @@
 #include "ProgressBar.h"
+#include <Display/misc/Animation.h>
 
-void CProgressBar::create(lv_obj_t* pParent)
+void CProgressBar::create(std::shared_ptr<CBaseControl> pParent)
 {
-    m_pInstance.reset(lv_bar_create(pParent));
+    m_pInstance.reset(lv_bar_create(pParent->getObj()));
     CBaseControl::create(pParent);
+
+    auto slow_inter = addAnimation("slow_inter");
+    slow_inter->setVariable(this);
+    slow_inter->setTime(1000);
+    slow_inter->setCustomExecutionCallback([=](CBaseControl* obj, _lv_anim_t* anim, int32_t value)
+    {
+        this->setValue(value);
+    });
 }
 
 void CProgressBar::setValue(int32_t value, lv_anim_enable_t anim)
 {
     lv_bar_set_value(m_pInstance.get(), value, anim);
+}
+
+void CProgressBar::setValueRanged(int16_t from, int16_t to)
+{
+    auto slow_inter = getAnimation("slow_inter") ;
+    slow_inter->setValues(from, to);
+    slow_inter->start();
 }
 
 void CProgressBar::setStartValue(int32_t value, lv_anim_enable_t anim)

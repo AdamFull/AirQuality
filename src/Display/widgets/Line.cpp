@@ -1,8 +1,8 @@
 #include "Line.h"
 
-void CLine::create(lv_obj_t* pParent)
+void CLine::create(std::shared_ptr<CBaseControl> pParent)
 {
-    m_pInstance.reset(lv_line_create(pParent));
+    m_pInstance.reset(lv_line_create(pParent->getObj()));
     CBaseControl::create(pParent);
 }
 

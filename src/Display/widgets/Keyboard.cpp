@@ -1,8 +1,8 @@
 #include "Keyboard.h"
 
-void CKeyboard::create(lv_obj_t* pParent)
+void CKeyboard::create(std::shared_ptr<CBaseControl> pParent)
 {
-    m_pInstance.reset(lv_keyboard_create(pParent));
+    m_pInstance.reset(lv_keyboard_create(pParent->getObj()));
     CBaseControl::create(pParent);
 }
 

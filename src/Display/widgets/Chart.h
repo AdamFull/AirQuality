@@ -4,7 +4,7 @@
 class CChart : public CBaseControl
 {
 public:
-    void create(lv_obj_t* pParent) override;
+    void create(std::shared_ptr<CBaseControl> pParent) override;
 
     void setType(lv_chart_type_t type);
     void setPointCount(uint16_t cnt);

@@ -4,7 +4,7 @@
 class CArc : public CBaseControl
 {
 public:
-    void create(lv_obj_t* pParent) override;
+    void create(std::shared_ptr<CBaseControl> pParent) override;
 
     void setStartAngle(uint16_t start);
     void setEndAngle(uint16_t end);
@@ -26,4 +26,6 @@ public:
     int16_t getMinValue();
     int16_t getMaxValue();
     lv_arc_mode_t getMode();
+protected:
+    int16_t m_valueMin{0}, m_valueMax{100};
 };

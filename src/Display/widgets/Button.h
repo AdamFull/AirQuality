@@ -4,5 +4,6 @@
 class CButton : public CBaseControl
 {
 public:
-    void create(lv_obj_t* pParent) override;
+    void create(std::shared_ptr<CBaseControl> pParent) override;
+    void create(std::shared_ptr<CBaseControl>, std::shared_ptr<CBaseControl> pPtr) override; 
 };

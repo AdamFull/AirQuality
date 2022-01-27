@@ -1,8 +1,8 @@
 #include "Roller.h"
 
-void CRoller::create(lv_obj_t* pParent)
+void CRoller::create(std::shared_ptr<CBaseControl> pParent)
 {
-    m_pInstance.reset(lv_roller_create(pParent));
+    m_pInstance.reset(lv_roller_create(pParent->getObj()));
     CBaseControl::create(pParent);
 }
 

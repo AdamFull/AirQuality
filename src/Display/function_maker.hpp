@@ -2,7 +2,7 @@
 #include <functional>
 
 template <class _Class, class _ReturnType, class... Args>
-inline std::function<_ReturnType(Args...)> make_delegate(_Class *c, _ReturnType (_Class::*m)(Args...)) noexcept
+inline std::function<_ReturnType(Args...)> make_func(_Class *c, _ReturnType (_Class::*m)(Args...)) noexcept
 {
     return [=](Args &&...args)
     { 
@@ -11,7 +11,7 @@ inline std::function<_ReturnType(Args...)> make_delegate(_Class *c, _ReturnType 
 }
 
 template <class _Class, class _ReturnType, class... Args>
-inline std::function<_ReturnType(Args...)> make_delegate(const _Class *c, _ReturnType (_Class::*m)(Args...) const) noexcept
+inline std::function<_ReturnType(Args...)> make_func(const _Class *c, _ReturnType (_Class::*m)(Args...) const) noexcept
 {
     return [=](Args &&...args)
     { 

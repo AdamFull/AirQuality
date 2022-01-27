@@ -4,7 +4,7 @@
 class CTable : public CBaseControl
 {
 public:
-    void create(lv_obj_t* pParent) override;
+    void create(std::shared_ptr<CBaseControl> pParent) override;
 
     void setCellValue(uint16_t row, uint16_t col, const std::string& srText);
     void setRowCount(uint16_t row_cnt);

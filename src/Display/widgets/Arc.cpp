@@ -1,8 +1,8 @@
 #include "Arc.h"
 
-void CArc::create(lv_obj_t* pParent)
+void CArc::create(std::shared_ptr<CBaseControl> pParent)
 {
-    m_pInstance.reset(lv_arc_create(pParent));
+    m_pInstance.reset(lv_arc_create(pParent->getObj()));
     CBaseControl::create(pParent);
 }
 
@@ -53,6 +53,8 @@ void CArc::setValue(int16_t value)
 
 void CArc::setRange(int16_t min, int16_t max)
 {
+    m_valueMin = min;
+    m_valueMax = max;
     lv_arc_set_range(m_pInstance.get(), min, max);
 }
 

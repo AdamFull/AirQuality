@@ -4,7 +4,7 @@
 class CDropdown : public CBaseControl
 {
 public:
-    void create(lv_obj_t* pParent) override;
+    void create(std::shared_ptr<CBaseControl> pParent) override;
 
     void setText(const std::string& srText);
     void setOptions(const std::string& srText);

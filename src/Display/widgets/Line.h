@@ -5,7 +5,7 @@
 class CLine : public CBaseControl
 {
 public:
-    void create(lv_obj_t* pParent) override;
+    void create(std::shared_ptr<CBaseControl> pParent) override;
 
     void addPoint(int16_t x, int16_t y);
     void removePoint(uint32_t pos);

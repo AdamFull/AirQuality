@@ -17,7 +17,17 @@ public:
     ~NotifyProperty() { notify = nullptr; }
 
     inline const std::optional<T>& get() const { return value; }
-    inline void bind(const std::function<void(const T&)> &cb) { notify = cb; }
+    template<class _lambdaexpr>
+    inline void bind(_lambdaexpr&& cb) 
+    { 
+        notify = std::forward<_lambdaexpr>(cb); 
+    }
+
+    template<class _Class, class _ReturnType, class... Args>
+    void bind(_Class *c, _ReturnType (_Class::*m)(Args...))
+    {
+        notify = make_func(c, m);
+    }
 
     inline T& operator=(const T &val)
     {
@@ -26,7 +36,7 @@ public:
             std::rotate(buffer.begin(), buffer.begin() + 1, buffer.end());
             buffer.back() = val;
 
-            notify(std::accumulate(buffer.begin(), buffer.end(), 0) / mean_max);
+            notify(last_changed, val);
             value = val;
             last_changed = val;
         }
@@ -42,7 +52,7 @@ private:
     std::array<T, mean_max> buffer{0};
     T last_changed{NULL};
     std::optional<T> value{T()};
-    std::function<void(const T&)> notify{nullptr};
+    std::function<void(const T&, const T&)> notify{nullptr};
 };
 
 using notify_int8_t = NotifyProperty<int8_t>;

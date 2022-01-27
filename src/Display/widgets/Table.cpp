@@ -1,8 +1,8 @@
 #include "Table.h"
 
-void CTable::create(lv_obj_t* pParent)
+void CTable::create(std::shared_ptr<CBaseControl> pParent)
 {
-    m_pInstance.reset(lv_table_create(pParent));
+    m_pInstance.reset(lv_table_create(pParent->getObj()));
     CBaseControl::create(pParent);
 }
 

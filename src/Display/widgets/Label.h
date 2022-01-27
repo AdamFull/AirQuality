@@ -4,8 +4,9 @@
 class CLabel : public CBaseControl
 {
 public:
-    void create(lv_obj_t* pParent = lv_scr_act()) override;
-
+    void create(std::shared_ptr<CBaseControl> pParent) override;
+    void create(std::shared_ptr<CBaseControl>, std::shared_ptr<CBaseControl> pPtr) override; 
+    
     void setText(const std::string& srText);
 
     template<class... Args>

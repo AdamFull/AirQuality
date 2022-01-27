@@ -1,8 +1,8 @@
 #include "Chart.h"
 
-void CChart::create(lv_obj_t* pParent)
+void CChart::create(std::shared_ptr<CBaseControl> pParent)
 {
-    m_pInstance.reset(lv_chart_create(pParent));
+    m_pInstance.reset(lv_chart_create(pParent->getObj()));
     CBaseControl::create(pParent);
 }
 

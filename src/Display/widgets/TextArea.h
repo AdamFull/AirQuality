@@ -4,7 +4,7 @@
 class CTextArea : public CBaseControl
 {
 public:
-    void create(lv_obj_t* pParent) override;
+    void create(std::shared_ptr<CBaseControl> pParent) override;
 
     void addChar(uint32_t c);
     void addText(const std::string& srText);

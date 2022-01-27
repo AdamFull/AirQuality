@@ -1,19 +1,27 @@
 #include "BaseControl.h"
+#include <Display/misc/Animation.h>
 
 void CBaseControl::create(lv_obj_t* pParent)
 {
-    if(!m_pInstance)
-    {
-        m_pInstance.reset(pParent);
-    }
+    m_pInstance.reset(pParent);
 }
 
-void CBaseControl::setParent(lv_obj_t* pParent)
+void CBaseControl::create(std::shared_ptr<CBaseControl> pParent)
 {
-    lv_obj_set_parent(m_pInstance.get(), pParent);
+
 }
 
-void CBaseControl::addStyle(CStyleHandle* style, lv_style_selector_t selector) 
+void CBaseControl::create(std::shared_ptr<CBaseControl> pParent, std::shared_ptr<CBaseControl> pPtr)
+{
+
+}
+
+void CBaseControl::setParent(std::shared_ptr<CBaseControl> pParent)
+{
+    lv_obj_set_parent(m_pInstance.get(), pParent->getObj());
+}
+
+void CBaseControl::addStyle(std::shared_ptr<CStyle> style, lv_style_selector_t selector) 
 { 
     if(style)
     {
@@ -34,6 +42,34 @@ void CBaseControl::setStyleBaseDir(lv_base_dir_t value, lv_style_selector_t sele
 void CBaseControl::setStyleSize(lv_coord_t value, lv_style_selector_t selector)
 {
     lv_obj_set_style_size(m_pInstance.get(), value, selector);
+}
+
+CAnimation* CBaseControl::addAnimation(const std::string& srAnimName)
+{
+    auto pAnimation = new CAnimation();
+    pAnimation->create();
+    m_animations.emplace(srAnimName, pAnimation);
+    return pAnimation;
+}
+
+CAnimation* CBaseControl::getAnimation(const std::string& srAnimName)
+{
+    return m_animations[srAnimName];
+}
+
+void CBaseControl::event(lv_event_t* e)
+{
+    auto pData = static_cast<CBaseControl*>(e->user_data);
+    pData->handleEvents(e);
+}
+
+void CBaseControl::handleEvents(lv_event_t* e)
+{
+    auto it = m_events.find(e->code);
+    if(it != m_events.end())
+    {
+        it->second(e);
+    }
 }
 
 void CBaseControl::setPosition(lv_coord_t x, lv_coord_t y)
@@ -76,7 +112,7 @@ void CBaseControl::clearFlag(lv_obj_flag_t f)
     lv_obj_clear_flag(m_pInstance.get(), f);
 }
 
-void CBaseControl::removeStyle(CStyleHandle* style, lv_style_selector_t selector)
+void CBaseControl::removeStyle(CStyle* style, lv_style_selector_t selector)
 {
     lv_obj_remove_style(m_pInstance.get(), style ? style->get() : nullptr, selector);
 }

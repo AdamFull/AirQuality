@@ -1,8 +1,8 @@
 #include "Dropdown.h"
 
-void CDropdown::create(lv_obj_t* pParent)
+void CDropdown::create(std::shared_ptr<CBaseControl> pParent)
 {
-    m_pInstance.reset(lv_dropdown_create(pParent));
+    m_pInstance.reset(lv_dropdown_create(pParent->getObj()));
     CBaseControl::create(pParent);
 }
 

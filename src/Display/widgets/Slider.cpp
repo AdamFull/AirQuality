@@ -1,8 +1,8 @@
 #include "Slider.h"
 
-void CSlider::create(lv_obj_t* pParent)
+void CSlider::create(std::shared_ptr<CBaseControl> pParent)
 {
-    m_pInstance.reset(lv_slider_create(pParent));
+    m_pInstance.reset(lv_slider_create(pParent->getObj()));
     CBaseControl::create(pParent);
 }
 
