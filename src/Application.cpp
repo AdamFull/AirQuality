@@ -161,13 +161,11 @@ void Application::onCreate(std::shared_ptr<CBaseControl> base)
 
     sensor_pm25.bind(std::move([=](const uint16_t &old, const uint16_t &val)
     {
-        auto sr = std::string(String(val).c_str());
-
-        labelPM25data->setText(sr);
-        labelTVOCdata->setText(sr);
-        labelCO2data->setText(sr);
-        labelTempdata->setText(sr);
-        labelHumdata->setText(sr);
+        labelPM25data->setValueRanged(old, val);
+        labelTVOCdata->setValueRanged(old, val);
+        labelCO2data->setValueRanged(old, val);
+        labelTempdata->setValueRanged(old, val);
+        labelHumdata->setValueRanged(old, val);
         
         progressPM25->setValueRanged(old, val);
         progressTVOC->setValueRanged(old, val);

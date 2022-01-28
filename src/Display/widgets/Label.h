@@ -1,5 +1,6 @@
 #pragma once
 #include "BaseControl.h"
+#include <sstream>
 
 class CLabel : public CBaseControl
 {
@@ -8,6 +9,16 @@ public:
     void create(std::shared_ptr<CBaseControl>, std::shared_ptr<CBaseControl> pPtr) override; 
     
     void setText(const std::string& srText);
+
+    template<class T>
+    void setValue(T value)
+    {
+        std::stringstream ss;
+        ss << value;
+        setText(ss.str());
+    }
+
+    void setValueRanged(int16_t from, int16_t to);
 
     template<class... Args>
     void setTextFormat(Args &&...args)

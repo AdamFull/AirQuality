@@ -36,9 +36,11 @@ public:
             std::rotate(buffer.begin(), buffer.begin() + 1, buffer.end());
             buffer.back() = val;
 
+            T mean = std::accumulate(buffer.begin(), buffer.end(), 0) / mean_max;
+
             notify(last_changed, val);
+            last_changed = value.value_or(0);
             value = val;
-            last_changed = val;
         }
         return last_changed;
     }

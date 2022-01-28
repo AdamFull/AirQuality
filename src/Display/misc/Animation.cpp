@@ -2,7 +2,7 @@
 
 CAnimation::~CAnimation()
 {
-    Serial.println("anim deleted");
+    
 }
 
 void CAnimation::create()

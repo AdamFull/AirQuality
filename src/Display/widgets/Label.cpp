@@ -1,15 +1,30 @@
 #include "Label.h"
+#include <Display/misc/Animation.h>
 
 void CLabel::create(std::shared_ptr<CBaseControl> pParent)
 {
     m_pInstance.reset(lv_label_create(pParent->getObj()));
     CBaseControl::create(pParent);
+
+    auto slow_inter = addAnimation("slow_inter");
+    slow_inter->setTime(1000);
+    slow_inter->setExecutionCallback(std::move([&](lv_anim_t* anim, int32_t value)
+    {
+        this->setValue(value);
+    }));
 }
 
 void CLabel::create(std::shared_ptr<CBaseControl> pParent, std::shared_ptr<CBaseControl> pPtr)
 {
     m_pInstance.reset(pPtr->getObj());
     CBaseControl::create(pParent, pPtr);
+}
+
+void CLabel::setValueRanged(int16_t from, int16_t to)
+{
+    auto slow_inter = getAnimation("slow_inter") ;
+    slow_inter->setValues(from, to);
+    slow_inter->start();
 }
 
 void CLabel::setText(const std::string& srText)
