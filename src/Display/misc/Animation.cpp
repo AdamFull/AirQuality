@@ -10,12 +10,12 @@ void CAnimation::create()
     lv_anim_init(&m_animation);
     setUserData(this);
     setVariable(&m_animation);
-    //lv_anim_set_exec_cb(&m_animation, &CAnimation::executionCallback);
+
     lv_anim_set_custom_exec_cb(&m_animation, &CAnimation::executionCallback);
-    /*lv_anim_set_path_cb(&m_animation, &CAnimation::pathCallback);
+    lv_anim_set_path_cb(&m_animation, &CAnimation::pathCallback);
     lv_anim_set_start_cb(&m_animation, &CAnimation::startCallback);
-    lv_anim_set_get_value_cb(&m_animation, &CAnimation::getValueCallback);
-    lv_anim_set_ready_cb(&m_animation, &CAnimation::readyCallback);*/
+    //lv_anim_set_get_value_cb(&m_animation, &CAnimation::getValueCallback);
+    lv_anim_set_ready_cb(&m_animation, &CAnimation::readyCallback);
 }
 
 lv_anim_t* CAnimation::start()
@@ -174,7 +174,7 @@ int32_t CAnimation::pathCallback(const _lv_anim_t* obj)
     auto pThis = static_cast<CAnimation*>(obj->user_data);
     if(pThis && pThis->m_pathCallback)
         return pThis->callPathCallback(obj);
-    return -1;
+    return lv_anim_path_linear(obj);
 }
 
 void CAnimation::startCallback(_lv_anim_t* obj)
@@ -189,7 +189,7 @@ int32_t CAnimation::getValueCallback(_lv_anim_t* obj)
     auto pThis = static_cast<CAnimation*>(obj->user_data);
     if(pThis)
         return pThis->callGetValueCallback(obj);
-    return -1;
+    return 1;
 }
 
 void CAnimation::readyCallback(_lv_anim_t* obj)
