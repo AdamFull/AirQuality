@@ -1,15 +1,16 @@
 #pragma once
-#include "../widgets/BaseControl.h"
+#include <Display/widgets/BaseControl.h>
+#include <Arduino.h>
 
 class CAnimation
 {
 public:
     CAnimation() = default;
+    ~CAnimation();
     void create();
 
     lv_anim_t* start();
     uint32_t getPlaytime();
-    void setVariable(CBaseControl* object);
     static bool del(void* var, lv_anim_exec_xcb_t exec_cb);
     static void delAll();
     static lv_anim_t* get(void * var, lv_anim_exec_xcb_t exec_cb);
@@ -37,17 +38,12 @@ public:
     lv_anim_t* customGet(lv_anim_custom_exec_cb_t exec_cb);
 
     /* callbacks */
+
     template<class _lambdaexpr>
     void setExecutionCallback(_lambdaexpr&& lexpr) { m_executionCallback = std::forward<_lambdaexpr>(lexpr); }
 
     template<class _Class, class _ReturnType, class... Args>
     void setExecutionCallback(_Class *c, _ReturnType (_Class::*m)(Args...)) { m_executionCallback = std::move(make_func(c, m)); }
-
-    template<class _lambdaexpr>
-    void setCustomExecutionCallback(_lambdaexpr&& lexpr) { m_customExecutionCallback = std::forward<_lambdaexpr>(lexpr); }
-
-    template<class _Class, class _ReturnType, class... Args>
-    void setCustomExecutionCallback(_Class *c, _ReturnType (_Class::*m)(Args...)) { m_customExecutionCallback = std::move(make_func(c, m)); }
 
     template<class _lambdaexpr>
     void setPathCallback(_lambdaexpr&& lexpr) { m_pathCallback = std::forward<_lambdaexpr>(lexpr); }
@@ -75,17 +71,7 @@ public:
 
     /* user data*/
 
-    template<class T>
-    void setVariable(T* var)
-    {
-        lv_anim_set_var(&m_animation, var);
-    }
-
-    template<class T>
-    void setUserData(T user_data)
-    {
-        lv_anim_set_user_data(&m_animation, static_cast<void*>(user_data));
-    }
+    void setUserData(void* user_data);
 
     template<class T>
     T* getUserData()
@@ -94,19 +80,26 @@ public:
     }
 
 private:
-    static void executionCallback(void* obj, int32_t data);
-    static void customExecutionCallback(lv_anim_t* obj, int32_t data);
-    static int32_t pathCallback(const struct _lv_anim_t* obj);
-    static void startCallback(struct _lv_anim_t* obj);
-    static int32_t getValueCallback(struct _lv_anim_t*);
-    static void readyCallback(struct _lv_anim_t*);
+    /*No needed for user anymore. Use lambda capture!*/
+    void setVariable(void* object);
 
-    static std::function<void(void*, int32_t)> m_executionCallback;
-    std::function<void(CBaseControl*, _lv_anim_t*, int32_t)> m_customExecutionCallback;
-    std::function<int32_t(CBaseControl*, const struct _lv_anim_t*)> m_pathCallback;
-    std::function<void(CBaseControl*, struct _lv_anim_t*)> m_startCallback;
-    std::function<int32_t(CBaseControl*, struct _lv_anim_t*)> m_getValueCallback;
-    std::function<void(CBaseControl*, struct _lv_anim_t*)> m_readyCallback;
+    static void executionCallback(lv_anim_t* obj, int32_t data);
+    static int32_t pathCallback(const lv_anim_t* obj);
+    static void startCallback(lv_anim_t* obj);
+    static int32_t getValueCallback(lv_anim_t*);
+    static void readyCallback(lv_anim_t*);
+
+    void callExecutionCallback(lv_anim_t* obj, int32_t data);
+    int32_t callPathCallback(const lv_anim_t* obj);
+    void callStartCallback(lv_anim_t* obj);
+    int32_t callGetValueCallback(lv_anim_t* obj);
+    void callReadyCallback(lv_anim_t* obj);
+
+    std::function<void(lv_anim_t*, int32_t)> m_executionCallback{nullptr};
+    std::function<int32_t(const lv_anim_t*)> m_pathCallback{nullptr};
+    std::function<void(lv_anim_t*)> m_startCallback{nullptr};
+    std::function<int32_t(lv_anim_t*)> m_getValueCallback{nullptr};
+    std::function<void(lv_anim_t*)> m_readyCallback{nullptr};
 
     CBaseControl* m_pObject{nullptr};
     lv_anim_t m_animation;

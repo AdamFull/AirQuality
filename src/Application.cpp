@@ -170,10 +170,10 @@ void Application::onCreate(std::shared_ptr<CBaseControl> base)
         labelHumdata->setText(sr);
         
         progressPM25->setValueRanged(old, val);
-        /*progressTVOC->setValueRanged(old, val);
+        progressTVOC->setValueRanged(old, val);
         progressCO2->setValueRanged(old, val);
         progressTemp->setValueRanged(old, val);
-        progressHum->setValueRanged(old, val);*/
+        progressHum->setValueRanged(old, val);
         Serial.printf("%d:%d\n", old, val);
     }));
 }   

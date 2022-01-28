@@ -7,9 +7,8 @@ void CProgressBar::create(std::shared_ptr<CBaseControl> pParent)
     CBaseControl::create(pParent);
 
     auto slow_inter = addAnimation("slow_inter");
-    slow_inter->setVariable(this);
     slow_inter->setTime(1000);
-    slow_inter->setCustomExecutionCallback([=](CBaseControl* obj, _lv_anim_t* anim, int32_t value)
+    slow_inter->setExecutionCallback([=](lv_anim_t* anim, int32_t value)
     {
         this->setValue(value);
     });

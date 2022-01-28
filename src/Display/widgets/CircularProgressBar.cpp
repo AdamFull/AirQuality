@@ -11,13 +11,11 @@ void CCircularProgressBar::create(std::shared_ptr<CBaseControl> pParent)
     removeStyle(nullptr, LV_PART_KNOB);
 
     auto slow_inter = addAnimation("slow_inter");
-    slow_inter->setVariable(this);
     slow_inter->setTime(1000);
-    slow_inter->setCustomExecutionCallback([=](CBaseControl* obj, _lv_anim_t* anim, int32_t value)
+    slow_inter->setExecutionCallback(std::move([&](lv_anim_t* anim, int32_t value)
     {
-        Serial.println(value);
         this->setValue(value);
-    });
+    }));
 }
 
 void CCircularProgressBar::setValueRanged(int16_t from, int16_t to)

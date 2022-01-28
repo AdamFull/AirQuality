@@ -1,14 +1,17 @@
 #include "Animation.h"
-#include <Arduino.h>
 
-std::function<void(void*, int32_t)> CAnimation::m_executionCallback;
+CAnimation::~CAnimation()
+{
+    Serial.println("anim deleted");
+}
 
 void CAnimation::create()
 {
     lv_anim_init(&m_animation);
     setUserData(this);
-    lv_anim_set_exec_cb(&m_animation, &CAnimation::executionCallback);
-    lv_anim_set_custom_exec_cb(&m_animation, &CAnimation::customExecutionCallback);
+    setVariable(&m_animation);
+    //lv_anim_set_exec_cb(&m_animation, &CAnimation::executionCallback);
+    lv_anim_set_custom_exec_cb(&m_animation, &CAnimation::executionCallback);
     /*lv_anim_set_path_cb(&m_animation, &CAnimation::pathCallback);
     lv_anim_set_start_cb(&m_animation, &CAnimation::startCallback);
     lv_anim_set_get_value_cb(&m_animation, &CAnimation::getValueCallback);
@@ -25,10 +28,9 @@ uint32_t CAnimation::getPlaytime()
     return lv_anim_get_playtime(&m_animation);
 }
 
-void CAnimation::setVariable(CBaseControl* object)
+void CAnimation::setVariable(void* object)
 {
-    m_pObject = object;
-    lv_anim_set_var(&m_animation, m_pObject->getObj());
+    lv_anim_set_var(&m_animation, object);
 }
 
 bool CAnimation::del(void* var, lv_anim_exec_xcb_t exec_cb)
@@ -151,49 +153,78 @@ lv_anim_t* CAnimation::customGet(lv_anim_custom_exec_cb_t exec_cb)
     return lv_anim_custom_get(&m_animation, exec_cb);
 }
 
+void CAnimation::setUserData(void* user_data)
+{
+    lv_anim_set_user_data(&m_animation, user_data);
+}
+
 
 /*Static callbacks*/
-void CAnimation::executionCallback(void* obj, int32_t data)
+void CAnimation::executionCallback(lv_anim_t* obj, int32_t data)
+{
+    auto pThis = (CAnimation*)obj->user_data;
+    if(pThis)
+    {
+        pThis->callExecutionCallback(obj, data);
+    }
+}
+
+int32_t CAnimation::pathCallback(const _lv_anim_t* obj)
+{
+    auto pThis = static_cast<CAnimation*>(obj->user_data);
+    if(pThis && pThis->m_pathCallback)
+        return pThis->callPathCallback(obj);
+    return -1;
+}
+
+void CAnimation::startCallback(_lv_anim_t* obj)
+{
+    auto pThis = static_cast<CAnimation*>(obj->user_data);
+    if(pThis)
+        pThis->callStartCallback(obj);
+}
+
+int32_t CAnimation::getValueCallback(_lv_anim_t* obj)
+{
+    auto pThis = static_cast<CAnimation*>(obj->user_data);
+    if(pThis)
+        return pThis->callGetValueCallback(obj);
+    return -1;
+}
+
+void CAnimation::readyCallback(_lv_anim_t* obj)
+{
+    auto pThis = static_cast<CAnimation*>(obj->user_data);
+    if(pThis)
+        pThis->callReadyCallback(obj);
+}
+
+void CAnimation::callExecutionCallback(_lv_anim_t* obj, int32_t data)
 {
     if(m_executionCallback)
         m_executionCallback(obj, data);
 }
 
-void CAnimation::customExecutionCallback(lv_anim_t* obj, int32_t data)
+int32_t CAnimation::callPathCallback(const _lv_anim_t* obj)
 {
-    auto pThis = static_cast<CAnimation*>(obj->user_data);
-    if(pThis)
-        Serial.println("ttt");
-    if(pThis && pThis->m_customExecutionCallback)
-        pThis->m_customExecutionCallback(pThis->m_pObject, obj, data);
+    if(m_pathCallback)
+        m_pathCallback(obj);
 }
 
-int32_t CAnimation::pathCallback(const struct _lv_anim_t* obj)
+void CAnimation::callStartCallback(_lv_anim_t* obj)
 {
-    auto pThis = static_cast<CAnimation*>(obj->user_data);
-    if(pThis && pThis->m_pathCallback)
-        return pThis->m_pathCallback(pThis->m_pObject, obj);
-    return -1;
+    if(m_startCallback)
+        m_startCallback(obj);
 }
 
-void CAnimation::startCallback(struct _lv_anim_t* obj)
+int32_t CAnimation::callGetValueCallback(_lv_anim_t* obj)
 {
-    auto pThis = static_cast<CAnimation*>(obj->user_data);
-    if(pThis && pThis->m_startCallback)
-        pThis->m_startCallback(pThis->m_pObject, obj);
+    if(m_getValueCallback)
+        m_getValueCallback(obj);
 }
 
-int32_t CAnimation::getValueCallback(struct _lv_anim_t* obj)
+void CAnimation::callReadyCallback(_lv_anim_t* obj)
 {
-    auto pThis = static_cast<CAnimation*>(obj->user_data);
-    if(pThis && pThis->m_getValueCallback)
-        return pThis->m_getValueCallback(pThis->m_pObject, obj);
-    return -1;
-}
-
-void CAnimation::readyCallback(struct _lv_anim_t* obj)
-{
-    auto pThis = static_cast<CAnimation*>(obj->user_data);
-    if(pThis && pThis->m_readyCallback)
-        pThis->m_readyCallback(pThis->m_pObject, obj);
+    if(m_readyCallback)
+        m_readyCallback(obj);
 }
