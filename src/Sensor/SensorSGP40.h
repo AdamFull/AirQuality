@@ -6,9 +6,10 @@
 class SensorSGP40 : public Sensor
 {
 public:
+    SensorSGP40();
     void Create() override;
     void Update() override;
 protected:
     std::unique_ptr<Adafruit_SGP40> m_pSensor;
-    uint16_t m_value;
+    react::ruint16_t* reactTVOC{nullptr};
 };

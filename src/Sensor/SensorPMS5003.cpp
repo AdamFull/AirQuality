@@ -1,6 +1,13 @@
 #include "SensorPMS5003.h"
 #include <sstream>
 
+SensorPMS5003::SensorPMS5003()
+{
+    reactPM01 = &AddValue<react::ruint16_t>("pm01");
+    reactPM10 = &AddValue<react::ruint16_t>("pm10");
+    reactPM25 = &AddValue<react::ruint16_t>("pm25");
+}
+
 void SensorPMS5003::Create()
 {
     //m_pSensor = std::make_unique<SerialPM>(PMS5003, PMS_RX, PMS_TX);
@@ -14,13 +21,6 @@ void SensorPMS5003::Create()
     delay(2000);
     while (m_pSerial->available())
         m_pSerial->read();
-
-    /*m_pSensor = std::make_unique<SerialPM>(PMS5003, Serial1);
-    m_pSensor->init();*/
-
-    m_values.emplace("pm01", &pm01);
-    m_values.emplace("pm10", &pm10);
-    m_values.emplace("pm25", &pm25);
 }
 
 void SensorPMS5003::Update()
@@ -212,6 +212,10 @@ void SensorPMS5003::Finalize(bool tsi_mode = false, bool truncated_num = false)
     default:
         break;
     }
+
+    (*reactPM01) = pm01;
+    (*reactPM10) = pm10;
+    (*reactPM25) = pm25;
 
     if (!truncated_num)
     {

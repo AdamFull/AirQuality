@@ -1,4 +1,5 @@
 #pragma once
+#include <NotifyProperty.hpp>
 #include <functional>
 #include <string>
 #include <any>
@@ -23,12 +24,27 @@ public:
         m_errorCallback = std::function<void(const std::string&)>(std::forward<Lambda>(callback));
     }
 
-    template<class T>
-    T GetValue(const std::string& vname)
+    template<class T, class... Args>
+    void subscribe(const std::string& vname, Args... args)
     {
-        return (*static_cast<T*>(m_values[vname]));
+        auto& val = GetValue<T>(vname);
+        val.bind(std::forward<Args>(args)...);
     }
 protected:
+    template<class T>
+    T& AddValue(const std::string& vname)
+    {
+        static_assert(react::is_react_value<T>::value, "Cannot add non-reactive value as sensor value.");
+        m_values.emplace(vname, T());
+        return std::get<T>(m_values.at(vname));
+    }
+
+    template<class T>
+    T& GetValue(const std::string& vname)
+    {
+        return std::get<T>(m_values.at(vname));
+    }
+    
     std::function<void(const std::string&)> m_errorCallback;
-    std::map<std::string, void*> m_values;
+    std::map<std::string, react::variants> m_values;
 };

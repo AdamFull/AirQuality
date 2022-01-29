@@ -11,12 +11,6 @@ void Application::Create()
     display->setOnCreateCallback(this, &Application::onCreate);
     
     display->Create();
-
-    SensorHandler::GetInstance()->AddSensor<SensorPMS5003>("pms5003");
-    SensorHandler::GetInstance()->GetLast()->AttachErrorCB(std::move([&](const std::string& error) { ErrorHandler(error); }));
-    /*SensorHandler::GetInstance()->AddSensor<SensorMHZ19>("MH-Z19");
-    SensorHandler::GetInstance()->AddSensor<SensorSGP40>("SGP40");
-    SensorHandler::GetInstance()->AddSensor<SensorSHT31>("SHT31");*/
     
     SensorHandler::GetInstance()->Create();
 }
@@ -25,7 +19,7 @@ void Application::Update()
 {
     display->Update();
     SensorHandler::GetInstance()->Update();
-    sensor_pm25 = SensorHandler::GetInstance()->GetSensor("pms5003")->GetValue<uint16_t>("pm25");
+    //sensor_pm25 = SensorHandler::GetInstance()->GetSensor("pms5003")->GetValue<react::ruint16_t>("pm25");
 }
 
 void Application::ErrorHandler(const std::string& error)
@@ -159,7 +153,10 @@ void Application::onCreate(std::shared_ptr<CBaseControl> base)
     progressHum->setRange(0, 2300);
 
 
-    sensor_pm25.bind(std::move([=](const uint16_t &old, const uint16_t &val)
+    /* Subscribtion to sensors */
+    auto pms5003 = SensorHandler::GetInstance()->AddSensor<SensorPMS5003>("pms5003");
+    pms5003->AttachErrorCB(std::move([&](const std::string& error) { ErrorHandler(error); }));
+    pms5003->subscribe<react::ruint16_t>(SensorPMS5003::VAL_PM25, [=](const uint16_t &old, const uint16_t &val)
     {
         labelPM25data->setValueRanged(old, val);
         labelTVOCdata->setValueRanged(old, val);
@@ -173,5 +170,8 @@ void Application::onCreate(std::shared_ptr<CBaseControl> base)
         progressTemp->setValueRanged(old, val);
         progressHum->setValueRanged(old, val);
         Serial.printf("%d:%d\n", old, val);
-    }));
+    });
+    /*SensorHandler::GetInstance()->AddSensor<SensorMHZ19>("MH-Z19");
+    SensorHandler::GetInstance()->AddSensor<SensorSGP40>("SGP40");
+    SensorHandler::GetInstance()->AddSensor<SensorSHT31>("SHT31");*/
 }   

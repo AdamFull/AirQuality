@@ -20,9 +20,11 @@ public:
     void Update();
 
     template<class T>
-    void AddSensor(const std::string& sname)
+    auto AddSensor(const std::string& sname) -> decltype(auto)
     {
-        m_sensors.emplace(sname, new T());
+        auto sensor = new T();
+        m_sensors.emplace(sname, sensor);
+        return sensor;
     }
 
     template<class T>

@@ -7,10 +7,11 @@
 class SensorMHZ19 : public Sensor
 {
 public:
+    SensorMHZ19();
     void Create() override;
     void Update() override;
 protected:
     std::unique_ptr<MHZ19> m_pSensor;
     std::unique_ptr<SoftwareSerial> m_pSSerial;
-    int m_value;
+    react::rint32_t* reactPPM{nullptr};
 };

@@ -74,6 +74,12 @@ namespace messages
 class SensorPMS5003 : public Sensor
 {
 public:
+    static constexpr const char* VAL_PM01 = "pm01";
+    static constexpr const char* VAL_PM10 = "pm10";
+    static constexpr const char* VAL_PM25 = "pm25";
+
+    SensorPMS5003();
+
     void Create() override;
     void Update() override;
 private:
@@ -121,6 +127,10 @@ protected:
     PMError eError{PMError::eNoError};
     ESensorType eSensorType;
     uint32_t m_iStartWait{0}, m_iWaitTime{0};
+
+    react::ruint16_t* reactPM01{nullptr};
+    react::ruint16_t* reactPM10{nullptr};
+    react::ruint16_t* reactPM25{nullptr};
 
     size_t m_iBodyLen{0};
     size_t m_iMessageLen{0};
