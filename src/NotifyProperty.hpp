@@ -7,17 +7,18 @@
 #include <variant>
 #include <type_traits>
 #include <cmath>
+#include <tuple>
 
 namespace react
 {
     constexpr const uint16_t mean_max{20};
+    using avaliable_types_t = std::tuple<int8_t, uint8_t, int16_t, uint16_t, int32_t, uint32_t, int64_t, uint64_t, bool, float, double>;
 
     template <class T>
     struct NotifyProperty 
     {
-        /*static_assert(std::is_object<T>::value && 
-        std::is_void<T>::value, 
-        "Type is not arithmetic or void. NotifyProperty support only arithmetic types except for void.");*/
+        static_assert(!std::is_same<T, avaliable_types_t>::value, 
+        "Placed type is not avaliable. NotifyProperty<T> support only types: int8_t, uint8_t, int16_t, uint16_t, int32_t, uint32_t, int64_t, uint64_t, bool, float, double.");
     public:
         NotifyProperty() = default;
 
@@ -34,7 +35,7 @@ namespace react
         template<class _Class, class _ReturnType, class... Args>
         void bind(_Class *c, _ReturnType (_Class::*m)(Args...))
         {
-            notify = make_func(c, m);
+            notify = std::move(make_func(c, m));
         }
 
 
@@ -61,13 +62,15 @@ namespace react
         }
 
     private:
-        constexpr std::enable_if<std::is_floating_point<T>::value, bool>
+    template <typename U = T>
+        typename std::enable_if<std::is_floating_point<U>::value, bool>::type
         ncompare(const T& first, const T& second)
         {
             return std::fabs(first - second) <= std::numeric_limits<T>::epsilon();
         }
 
-        constexpr std::enable_if<!std::is_floating_point<T>::value, bool>
+        template <typename U = T>
+        typename std::enable_if<!std::is_floating_point<U>::value, bool>::type
         ncompare(const T& first, const T& second)
         {
             return first == second;
