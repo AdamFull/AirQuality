@@ -54,7 +54,9 @@ void Application::onCreate(std::shared_ptr<CBaseControl> base)
 
     auto small_text_style = display->AddStyle("small_text");
     auto big_text_style = display->AddStyle("big_text");
-    auto arc_style = display->AddStyle("arc");
+
+    auto arc_style = display->AddStyle("arc_good");
+
     auto bar_style = display->AddStyle("bar");
 
     small_text_style->setTextColor(lv_color_make(128, 128, 128));
@@ -62,7 +64,7 @@ void Application::onCreate(std::shared_ptr<CBaseControl> base)
 
     big_text_style->setTextColor(lv_color_make(60, 30, 60));
 
-    arc_style->setArcColor(lv_color_make(210, 210, 210));
+    arc_style->setArcColor(lv_color_make(0,255,0));
 
     bar_style->setBgColor(lv_color_make(210, 210, 210));
     bar_style->setBorderWidth(1);
@@ -86,7 +88,7 @@ void Application::onCreate(std::shared_ptr<CBaseControl> base)
     labelPM25data->setAlign(LV_ALIGN_TOP_MID, 0, 40);
 
     progressPM25->setSize(125, 125);
-    progressPM25->addStyle(arc_style, 0);
+    progressPM25->addStyle(arc_style, LV_PART_INDICATOR);
     progressPM25->setAlign(LV_ALIGN_CENTER, 0, -60);
     progressPM25->setRange(0, 2300);
 
@@ -159,16 +161,17 @@ void Application::onCreate(std::shared_ptr<CBaseControl> base)
     pms5003->subscribe<react::ruint16_t>(SensorPMS5003::VAL_PM25, [=](const uint16_t &old, const uint16_t &val)
     {
         labelPM25data->setValueRanged(old, val);
-        labelTVOCdata->setValueRanged(old, val);
-        labelCO2data->setValueRanged(old, val);
-        labelTempdata->setValueRanged(old, val);
-        labelHumdata->setValueRanged(old, val);
-        
         progressPM25->setValueRanged(old, val);
-        progressTVOC->setValueRanged(old, val);
-        progressCO2->setValueRanged(old, val);
-        progressTemp->setValueRanged(old, val);
-        progressHum->setValueRanged(old, val);
+        auto progress = (val / 2300.0) * 100;
+        if(progress < 35)
+            arc_style->setArcColor(lv_color_make(0,255,0));
+        else if(progress > 30 && progress < 70)
+            arc_style->setArcColor(lv_color_make(255,255,0));
+        else
+            arc_style->setArcColor(lv_color_make(255,0,0));
+
+        progressPM25->refreshStyle(LV_PART_INDICATOR, LV_STYLE_ARC_COLOR);
+
         Serial.printf("%d:%d\n", old, val);
     });
     /*SensorHandler::GetInstance()->AddSensor<SensorMHZ19>("MH-Z19");

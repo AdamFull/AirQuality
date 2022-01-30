@@ -29,6 +29,16 @@ void CBaseControl::addStyle(std::shared_ptr<CStyle> style, lv_style_selector_t s
     }
 }
 
+void CBaseControl::refreshStyle(lv_part_t part, lv_style_prop_t prop)
+{
+    lv_obj_refresh_style(m_pInstance.get(), part, prop);
+}
+
+void CBaseControl::removeStyle(std::shared_ptr<CStyle> style, lv_style_selector_t selector)
+{
+    lv_obj_remove_style(m_pInstance.get(), style->get(), selector);
+}
+
 void CBaseControl::setStyleTextFont(const lv_font_t *font, lv_style_selector_t selector)
 {
     lv_obj_set_style_text_font(m_pInstance.get(), font, selector);
@@ -42,6 +52,11 @@ void CBaseControl::setStyleBaseDir(lv_base_dir_t value, lv_style_selector_t sele
 void CBaseControl::setStyleSize(lv_coord_t value, lv_style_selector_t selector)
 {
     lv_obj_set_style_size(m_pInstance.get(), value, selector);
+}
+
+void CBaseControl::setStyleLocalLineColor(lv_style_prop_t prop, lv_style_value_t value, lv_style_selector_t selector)
+{
+    lv_obj_set_local_style_prop(m_pInstance.get(), prop, value, selector);
 }
 
 CAnimation* CBaseControl::addAnimation(const std::string& srAnimName)

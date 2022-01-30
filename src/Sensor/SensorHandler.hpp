@@ -22,26 +22,26 @@ public:
     template<class T>
     auto AddSensor(const std::string& sname) -> decltype(auto)
     {
-        auto sensor = new T();
+        auto sensor = std::make_shared<T>();
         m_sensors.emplace(sname, sensor);
         return sensor;
     }
 
     template<class T>
-    T* GetSensorCast(const std::string& sname)
+    std::shared_ptr<T> GetSensorCast(const std::string& sname)
     {
-        return static_cast<T*>(m_sensors[sname]);
+        return std::static_pointer_cast<T>(m_sensors[sname]);
     }
 
-    Sensor* GetSensor(const std::string& sname)
+    std::shared_ptr<Sensor> GetSensor(const std::string& sname)
     {
         return m_sensors[sname];
     }
 
-    inline Sensor* GetLast()
+    inline std::shared_ptr<Sensor> GetLast()
     {
         return (--m_sensors.end())->second;
     }
 private:
-    std::map<std::string, Sensor*> m_sensors;
+    std::map<std::string, std::shared_ptr<Sensor>> m_sensors;
 };

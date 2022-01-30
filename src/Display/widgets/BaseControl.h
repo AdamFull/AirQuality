@@ -12,9 +12,12 @@ public:
     virtual void create(std::shared_ptr<CBaseControl>, std::shared_ptr<CBaseControl> pPtr);
     void setParent(std::shared_ptr<CBaseControl> pParent);
     void addStyle(std::shared_ptr<CStyle> style, lv_style_selector_t selector);
+    void refreshStyle(lv_part_t part, lv_style_prop_t prop);
+    void removeStyle(std::shared_ptr<CStyle> style, lv_style_selector_t selector);
     void setStyleTextFont(const lv_font_t *font, lv_style_selector_t selector);
     void setStyleBaseDir(lv_base_dir_t value, lv_style_selector_t selector);
     void setStyleSize(lv_coord_t value, lv_style_selector_t selector);
+    void setStyleLocalLineColor(lv_style_prop_t prop, lv_style_value_t value, lv_style_selector_t selector);
 
     CAnimation* addAnimation(const std::string& srAnimName);
     CAnimation* getAnimation(const std::string& srAnimName);
