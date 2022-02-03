@@ -18,10 +18,10 @@ public:
     virtual void Create() {}
     virtual void Update() {}
 
-    template<class Lambda>
-    void AttachErrorCB(Lambda&& callback)
+    template<class... Args>
+    void AttachErrorCB(Args... args)
     {
-        m_errorCallback = std::function<void(const std::string&)>(std::forward<Lambda>(callback));
+        m_errorCallback = std::move(EasyDelegate::TDelegate<void(const std::string&)>(std::forward<Args>(args)...));
     }
 
     template<class T, class... Args>
@@ -45,6 +45,6 @@ protected:
         return std::get<T>(m_values.at(vname));
     }
     
-    std::function<void(const std::string&)> m_errorCallback;
+    EasyDelegate::TDelegate<void(const std::string&)> m_errorCallback;
     std::map<std::string, react::variants> m_values;
 };

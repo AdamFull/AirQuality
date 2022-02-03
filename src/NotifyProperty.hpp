@@ -1,7 +1,7 @@
 #pragma once
 
 #include <optional>
-#include <functional>
+#include <Display/EasyDelegate.hpp>
 #include <numeric>
 #include <stdint.h>
 #include <variant>
@@ -26,18 +26,12 @@ namespace react
         ~NotifyProperty() { notify = nullptr; }
 
         inline const std::optional<T>& get() const { return value; }
-        template<class _lambdaexpr>
-        inline void bind(_lambdaexpr&& cb) noexcept
-        { 
-            notify = std::forward<_lambdaexpr>(cb); 
-        }
 
-        template<class _Class, class _ReturnType, class... Args>
-        void bind(_Class *c, _ReturnType (_Class::*m)(Args...))
+        template<class... Args>
+        void bind(Args... args)
         {
-            notify = std::move(make_func(c, m));
+            notify = std::move(EasyDelegate::TDelegate<void(const T&, const T&)>(std::forward<Args>(args)...));
         }
-
 
         inline T& operator=(const T &val) noexcept
         {
@@ -62,7 +56,7 @@ namespace react
         }
 
     private:
-    template <typename U = T>
+        template <typename U = T>
         typename std::enable_if<std::is_floating_point<U>::value, bool>::type
         ncompare(const T& first, const T& second)
         {
@@ -79,7 +73,7 @@ namespace react
         std::array<T, mean_max> buffer{0};
         T last_changed{NULL};
         std::optional<T> value{T()};
-        std::function<void(const T&, const T&)> notify{nullptr};
+        EasyDelegate::TDelegate<void(const T&, const T&)> notify{nullptr};
     };
 
 

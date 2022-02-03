@@ -25,6 +25,12 @@ void DisplayHandler::Create()
     disp_drv.antialiasing = 1;
     lv_disp_drv_register( &disp_drv );
 
+    static lv_indev_drv_t indev_drv;
+    lv_indev_drv_init(&indev_drv);
+    indev_drv.type = LV_INDEV_TYPE_ENCODER;
+    indev_drv.read_cb = DisplayHandler::ReadInput;
+    lv_indev_drv_register(&indev_drv);
+
     auto main_page = AddControl<CBaseControl>("lvgl_main_page", lv_scr_act());
     
     if(m_pOnCreateCallback)
@@ -37,7 +43,7 @@ void DisplayHandler::Update()
 {
     old_time = current_time;
     current_time = millis();
-    auto delta_time = current_time - old_time;
+    delta_time = current_time - old_time;
     lv_tick_inc(delta_time);
     lv_task_handler();
     lv_timer_handler();
@@ -67,4 +73,16 @@ void DisplayHandler::Flush( lv_disp_drv_t *disp, const lv_area_t *area, lv_color
     display->endWrite();
 
     lv_disp_flush_ready( disp );
+}
+
+void DisplayHandler::ReadInput(lv_indev_drv_t * indev, lv_indev_data_t * data)
+{
+    static int32_t last_diff = 0;
+    int32_t diff = 0; /* Dummy - no movement */
+    int btn_state = LV_INDEV_STATE_REL; /* Dummy - no press */
+
+    data->enc_diff = diff - last_diff;;
+    data->state = static_cast<lv_indev_state_t>(btn_state);
+
+    last_diff = diff;
 }

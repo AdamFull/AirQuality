@@ -158,7 +158,6 @@ void CAnimation::setUserData(void* user_data)
     lv_anim_set_user_data(&m_animation, user_data);
 }
 
-
 /*Static callbacks*/
 void CAnimation::executionCallback(lv_anim_t* obj, int32_t data)
 {

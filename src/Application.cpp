@@ -169,7 +169,7 @@ void Application::onCreate(std::shared_ptr<CBaseControl> base)
             arc_style->setArcColor(lv_color_make(255,255,0));
         else
             arc_style->setArcColor(lv_color_make(255,0,0));
-
+//VECT_TAB_ADDR;
         progressPM25->refreshStyle(LV_PART_INDICATOR, LV_STYLE_ARC_COLOR);
 
         Serial.printf("%d:%d\n", old, val);

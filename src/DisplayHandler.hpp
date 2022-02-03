@@ -16,16 +16,10 @@ public:
     void Create();
     void Update();
 
-    /*template<class _lambdaexpr>
-    void setOnCreateCallback(_lambdaexpr&& lexpr)
+    template<class... Args>
+    void setOnCreateCallback(Args... args)
     {
-        m_pOnCreateCallback = std::forward<_lambdaexpr>(lexpr);
-    }*/
-
-    template<class _Class, class _ReturnType, class... Args>
-    void setOnCreateCallback(_Class *c, _ReturnType (_Class::*m)(Args...))
-    {
-        m_pOnCreateCallback = std::move(make_func(c, m));
+        m_pOnCreateCallback = std::move(EasyDelegate::TDelegate<void(std::shared_ptr<CBaseControl>)>(std::forward<Args>(args)...));
     }
 
     template<class T>
@@ -56,13 +50,14 @@ public:
     std::shared_ptr<CStyle> GetStyle(const std::string& style_name);
 
     static void Flush(lv_disp_drv_t *disp, const lv_area_t *area, lv_color_t *color_p);
+    static void ReadInput(lv_indev_drv_t * indev, lv_indev_data_t * data);
 private:
     static std::unique_ptr<TFT_eSPI> display;
     std::map<std::string, std::shared_ptr<CBaseControl>> m_ctrls;
     std::map<std::string, std::shared_ptr<CStyle>> m_styles;
-    std::function<void(std::shared_ptr<CBaseControl>)> m_pOnCreateCallback;
+    EasyDelegate::TDelegate<void(std::shared_ptr<CBaseControl>)> m_pOnCreateCallback;
 
-    unsigned long current_time{0}, old_time{0};
+    unsigned long current_time{0}, old_time{0}, delta_time{0};
     lv_disp_draw_buf_t draw_buf;
     lv_color_t buf[ screenWidth * 10 ];
 };

@@ -1,6 +1,5 @@
 #pragma once
 #include <Display/widgets/BaseControl.h>
-#include <Arduino.h>
 
 class CAnimation
 {
@@ -38,36 +37,35 @@ public:
     lv_anim_t* customGet(lv_anim_custom_exec_cb_t exec_cb);
 
     /* callbacks */
+    template<class... Args>
+    void setExecutionCallback(Args... args)
+    {
+       m_executionCallback = std::move(EasyDelegate::TDelegate<void(lv_anim_t*, int32_t)>(std::forward<Args>(args)...));
+    }
 
-    template<class _lambdaexpr>
-    void setExecutionCallback(_lambdaexpr&& lexpr) { m_executionCallback = std::forward<_lambdaexpr>(lexpr); }
+    template<class... Args>
+    void setPathCallback(Args... args)
+    {
+       m_pathCallback = std::move(EasyDelegate::TDelegate<int32_t(const lv_anim_t*)>(std::forward<Args>(args)...));
+    }
+    
+    template<class... Args>
+    void setStartCallback(Args... args)
+    {
+       m_startCallback = std::move(EasyDelegate::TDelegate<void(lv_anim_t*)>(std::forward<Args>(args)...));
+    }
 
-    template<class _Class, class _ReturnType, class... Args>
-    void setExecutionCallback(_Class *c, _ReturnType (_Class::*m)(Args...)) { m_executionCallback = std::move(make_func(c, m)); }
-
-    template<class _lambdaexpr>
-    void setPathCallback(_lambdaexpr&& lexpr) { m_pathCallback = std::forward<_lambdaexpr>(lexpr); }
-
-    template<class _Class, class _ReturnType, class... Args>
-    void setPathCallback(_Class *c, _ReturnType (_Class::*m)(Args...)) { m_pathCallback = std::move(make_func(c, m)); }
-
-    template<class _lambdaexpr>
-    void setStartCallback(_lambdaexpr&& lexpr) { m_startCallback = std::forward<_lambdaexpr>(lexpr); }
-
-    template<class _Class, class _ReturnType, class... Args>
-    void setStartCallback(_Class *c, _ReturnType (_Class::*m)(Args...)) { m_startCallback = std::move(make_func(c, m)); }
-
-    template<class _lambdaexpr>
-    void setGetValueCallback(_lambdaexpr&& lexpr) { m_getValueCallback = std::forward<_lambdaexpr>(lexpr); }
-
-    template<class _Class, class _ReturnType, class... Args>
-    void setGetValueCallback(_Class *c, _ReturnType (_Class::*m)(Args...)) { m_getValueCallback = std::move(make_func(c, m)); }
-
-    template<class _lambdaexpr>
-    void setReadyCallback(_lambdaexpr&& lexpr) { m_readyCallback = std::forward<_lambdaexpr>(lexpr); }
-
-    template<class _Class, class _ReturnType, class... Args>
-    void setReadyCallback(_Class *c, _ReturnType (_Class::*m)(Args...)) { m_readyCallback = std::move(make_func(c, m)); }
+    template<class... Args>
+    void setGetValueCallback(Args... args)
+    {
+       m_getValueCallback = std::move(EasyDelegate::TDelegate<int32_t(lv_anim_t*)>(std::forward<Args>(args)...));
+    }
+    
+    template<class... Args>
+    void setReadyCallback(Args... args)
+    {
+       m_readyCallback = std::move(EasyDelegate::TDelegate<void(lv_anim_t*)>(std::forward<Args>(args)...));
+    }    
 
     /* user data*/
 
@@ -95,11 +93,11 @@ private:
     int32_t callGetValueCallback(lv_anim_t* obj);
     void callReadyCallback(lv_anim_t* obj);
 
-    std::function<void(lv_anim_t*, int32_t)> m_executionCallback{nullptr};
-    std::function<int32_t(const lv_anim_t*)> m_pathCallback{nullptr};
-    std::function<void(lv_anim_t*)> m_startCallback{nullptr};
-    std::function<int32_t(lv_anim_t*)> m_getValueCallback{nullptr};
-    std::function<void(lv_anim_t*)> m_readyCallback{nullptr};
+    EasyDelegate::TDelegate<void(lv_anim_t*, int32_t)> m_executionCallback{nullptr};
+    EasyDelegate::TDelegate<int32_t(const lv_anim_t*)> m_pathCallback{nullptr};
+    EasyDelegate::TDelegate<void(lv_anim_t*)> m_startCallback{nullptr};
+    EasyDelegate::TDelegate<int32_t(lv_anim_t*)> m_getValueCallback{nullptr};
+    EasyDelegate::TDelegate<void(lv_anim_t*)> m_readyCallback{nullptr};
 
     CBaseControl* m_pObject{nullptr};
     lv_anim_t m_animation;

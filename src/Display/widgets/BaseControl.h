@@ -1,7 +1,7 @@
 #pragma once
 #include <Display/misc/StyleHandle.h>
 #include <map>
-#include <Display/function_maker.hpp>
+#include <Display/EasyDelegate.hpp>
 
 class CAnimation;
 class CBaseControl
@@ -22,17 +22,10 @@ public:
     CAnimation* addAnimation(const std::string& srAnimName);
     CAnimation* getAnimation(const std::string& srAnimName);
 
-    template<class _lambdaexpr>
-    void addEventCallback(_lambdaexpr&& lexpr, lv_event_code_t filter)
+    template<class... Args>
+    void addEventCallback(Args... args, lv_event_code_t filter)
     {
-        m_events.emplace(filter, std::forward<_lambdaexpr>(lexpr));
-        lv_obj_add_event_cb(m_pInstance.get(), &CBaseControl::event, filter, this);
-    }
-
-    template<class _Class, class _ReturnType, class... Args>
-    void addEventCallback(_Class *c, _ReturnType (_Class::*m)(Args...), lv_event_code_t filter)
-    {
-        m_events.emplace(filter, std::move(make_func(c, m)));
+        m_events.emplace(filter, std::move(EasyDelegate::TDelegate<void(lv_event_t* e)>(std::forward<Args>(args)...)));
         lv_obj_add_event_cb(m_pInstance.get(), &CBaseControl::event, filter, this);
     }
 
@@ -49,7 +42,7 @@ public:
 private:
     static void event(lv_event_t* e);
     void handleEvents(lv_event_t* e);
-    std::map<lv_event_code_t, std::function<void(lv_event_t* e)>> m_events;
+    std::map<lv_event_code_t, EasyDelegate::TDelegate<void(lv_event_t* e)>> m_events;
     std::map<std::string, CAnimation*> m_animations;
 protected:
     std::unique_ptr<lv_obj_t> m_pInstance;
