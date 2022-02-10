@@ -14,4 +14,5 @@ public:
 private:
 	void onCreate(std::shared_ptr<CBaseControl> base);
 	std::unique_ptr<DisplayHandler> display;
+	react::ruint64_t deltatime{0};
 };

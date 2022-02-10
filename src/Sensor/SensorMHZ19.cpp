@@ -11,14 +11,18 @@ SensorMHZ19::SensorMHZ19()
 
 void SensorMHZ19::Create()
 {
-    m_pSSerial = std::make_unique<SoftwareSerial>(MHZ_RX, MHZ_TX);
-    m_pSSerial->begin(9600);
+    m_pSerial.reset(&Serial2);
+    m_pSerial->begin(9600, SERIAL_8N1);
     m_pSensor = std::make_unique<MHZ19>();
-    m_pSensor->begin(*m_pSSerial.get());
+    m_pSensor->begin(*m_pSerial.get());
     m_pSensor->autoCalibration();
 }
 
 void SensorMHZ19::Update()
 {
-    (*reactPPM) = m_pSensor->getCO2();
+    if (millis() - m_updateTimer > m_updateTime)
+    {
+        m_updateTimer = millis();
+        (*reactPPM) = m_pSensor->getCO2();
+    }
 }

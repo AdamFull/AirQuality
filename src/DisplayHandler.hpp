@@ -49,6 +49,11 @@ public:
     std::shared_ptr<CStyle> AddStyle(const std::string& style_name);
     std::shared_ptr<CStyle> GetStyle(const std::string& style_name);
 
+    uint64_t GetFrametime()
+    {
+        return delta_time;
+    }
+
     static void Flush(lv_disp_drv_t *disp, const lv_area_t *area, lv_color_t *color_p);
     static void ReadInput(lv_indev_drv_t * indev, lv_indev_data_t * data);
 private:
@@ -57,7 +62,7 @@ private:
     std::map<std::string, std::shared_ptr<CStyle>> m_styles;
     EasyDelegate::TDelegate<void(std::shared_ptr<CBaseControl>)> m_pOnCreateCallback;
 
-    unsigned long current_time{0}, old_time{0}, delta_time{0};
+    uint64_t current_time{0}, old_time{0}, delta_time{0};
     lv_disp_draw_buf_t draw_buf;
     lv_color_t buf[ screenWidth * 10 ];
 };

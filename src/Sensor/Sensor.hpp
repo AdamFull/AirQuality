@@ -47,4 +47,6 @@ protected:
     
     EasyDelegate::TDelegate<void(const std::string&)> m_errorCallback;
     std::map<std::string, react::variants> m_values;
+    uint64_t m_updateTimer{0};
+    static constexpr uint64_t m_updateTime{60000};
 };

@@ -44,6 +44,7 @@ void DisplayHandler::Update()
     old_time = current_time;
     current_time = millis();
     delta_time = current_time - old_time;
+    //Serial.printf("Frame time: %d\n", delta_time);
     lv_tick_inc(delta_time);
     lv_task_handler();
     lv_timer_handler();

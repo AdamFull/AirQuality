@@ -14,5 +14,9 @@ void SensorSGP40::Create()
 
 void SensorSGP40::Update()
 {
-    (*reactTVOC) = m_pSensor->measureRaw();
+    if (millis() - m_updateTimer > m_updateTime)
+    {
+        m_updateTimer = millis();
+        (*reactTVOC) = m_pSensor->measureRaw() / 1000;
+    }
 }
